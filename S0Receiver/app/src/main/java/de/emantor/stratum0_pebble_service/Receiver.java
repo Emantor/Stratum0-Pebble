@@ -87,12 +87,12 @@ public class Receiver extends BroadcastReceiver {
 
     }
 
-    private void setSpace(Context context,String zustand){
+    private void connectPowerBerry(Context context,String username){
         if(isConnectedTo(context,"Stratum0") || isConnectedTo(context,"Stratum0_5G")) {
             try {
                 JSch jsch = new JSch();
                 jsch.addIdentity("/mnt/sdcard/stratum0", "");
-                Session session = jsch.getSession(zustand, "powerberry.fritz.box", 22);
+                Session session = jsch.getSession(username, "powerberry.fritz.box", 22);
                 session.setConfig("PreferredAuthentications", "publickey");
                 session.setConfig("StrictHostKeyChecking", "no");
                 session.connect();
@@ -123,12 +123,17 @@ public class Receiver extends BroadcastReceiver {
         try {
             update();
             int status = 0;
-            PebbleDictionary send = new PebbleDictionary();
-            send.addString(SPACE_OPENER,openedBy);
-            if(isOpen){ status = 1;}
-            else { status = 0;}
-            send.addInt8(SPACE_STATUS,(byte) status);
-            PebbleKit.sendDataToPebble(context,PEBBLE_APP_UUID,send);
+            PebbleDictionary out_data = new PebbleDictionary();
+
+            out_data.addString(SPACE_OPENER,openedBy);
+
+            if(isOpen){
+		status = 1;
+	    } else {
+		status = 0;
+	    }
+            out_data.addInt8(SPACE_STATUS,(byte) status);
+            PebbleKit.sendDataToPebble(context,PEBBLE_APP_UUID,out_data);
 
         } catch (ParseException e) {
             Log.w(TAG, "Exception " + e);
@@ -138,8 +143,8 @@ public class Receiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-
         StrictMode.setThreadPolicy(policy);
+
         if (intent.getAction().equals(Constants.INTENT_APP_RECEIVE)) {
             final UUID receivedUuid = (UUID) intent.getSerializableExtra(Constants.APP_UUID);
 
@@ -169,9 +174,9 @@ public class Receiver extends BroadcastReceiver {
             if(data.getInteger(REQUEST_DATA)==1){
                 sendStatus(context);
             } else if (data.getInteger(REQUEST_DATA)==2){
-                setSpace(context,"auf");
+                connectPowerBerry(context,"auf");
             } else if (data.getInteger(REQUEST_DATA)==3){
-                setSpace(context,"zu");
+                connectPowerBerry(context,"zu");
             }
         }
     }

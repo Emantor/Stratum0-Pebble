@@ -10,9 +10,10 @@
 #define CLOSE_SPACE 3
 
 static Window *window;
-static TextLayer *space_status_layer;
 static TextLayer *space_opener_layer;
-static GBitmap *s_icon_bitmap;
+static GBitmap *s_icon_bitmap_open;
+static GBitmap *s_icon_bitmap_closed;
+static BitmapLayer *logo_layer;
 
 void send_data(int data)
 {
@@ -52,9 +53,11 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     switch (t->key) {
       case SPACE_STATUS:
         // Copy value and display
-        snprintf(s_buffer, sizeof(s_buffer), "Status:%d", t->value->uint8);
-	APP_LOG(APP_LOG_LEVEL_INFO, s_buffer);
-        text_layer_set_text(space_status_layer, s_buffer);
+        if(t->value->uint8==1){
+	  bitmap_layer_set_bitmap(logo_layer,s_icon_bitmap_open);
+	} else {
+	  bitmap_layer_set_bitmap(logo_layer,s_icon_bitmap_closed);
+	}
         break;
       case SPACE_OPENER:
         // Copy value and display
@@ -92,22 +95,26 @@ static void window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect window_bounds = layer_get_bounds(window_layer);
 
-  space_status_layer = text_layer_create(GRect(5, 0, window_bounds.size.w - 5, window_bounds.size.h));
-  text_layer_set_font(space_status_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24));
-  text_layer_set_text(space_status_layer, "Status...");
-  text_layer_set_overflow_mode(space_status_layer, GTextOverflowModeWordWrap);
+  logo_layer = bitmap_layer_create(GRect(22,5, 100, 100));
+  s_icon_bitmap_closed = gbitmap_create_with_resource(RESOURCE_ID_STRATUM0_CLOSED);
+  s_icon_bitmap_open = gbitmap_create_with_resource(RESOURCE_ID_STRATUM0_OPEN);
+  bitmap_layer_set_bitmap(logo_layer, s_icon_bitmap_closed);
 
-  space_opener_layer = text_layer_create(GRect(5, 35, window_bounds.size.w - 5, window_bounds.size.h));
+  space_opener_layer = text_layer_create(GRect(5, 105, window_bounds.size.w - 5, 50));
   text_layer_set_font(space_opener_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24));
   text_layer_set_text(space_opener_layer, "Opener...");
   text_layer_set_overflow_mode(space_opener_layer, GTextOverflowModeWordWrap);
 
-  layer_add_child(window_layer, text_layer_get_layer(space_status_layer));
   layer_add_child(window_layer, text_layer_get_layer(space_opener_layer));
-  send_data(1);
+  layer_add_child(window_layer, bitmap_layer_get_layer(logo_layer));
+  send_data(FETCH_DATA);
 }
 
 static void window_unload(Window *window) {
+  text_layer_destroy(space_opener_layer);
+  bitmap_layer_destroy(logo_layer);
+  gbitmap_destroy(s_icon_bitmap_closed);
+  gbitmap_destroy(s_icon_bitmap_open);
 }
 
 static void init(void) {

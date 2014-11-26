@@ -13,8 +13,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
-        <receiver android:name="de.emantor.stratum0_pebble_service.Receiver"
-            android:exported="false">
+        <receiver android:name="de.emantor.stratum0_pebble_service.Receiver">
             <intent-filter>
                 <action android:name="com.getpebble.action.app.RECEIVE" />
             </intent-filter>

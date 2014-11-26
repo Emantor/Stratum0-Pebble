@@ -1,0 +1,33 @@
+{
+  "uuid": "62f12f0f-0de8-408e-bf67-08074cb4188d",
+  "shortName": "Stratum 0",
+  "longName": "Stratum 0",
+  "companyName": "MakeAwesomeHappen",
+  "versionCode": 1,
+  "versionLabel": "1.0",
+  "watchapp": {
+    "watchface": false
+  },
+  "appKeys": {
+    "dummy": 0
+  },
+  "resources": {
+    "media": [{
+      "menuIcon": true,
+      "name": "IMAGE_MENU_ICON",
+      "type": "png",
+      "file": "stratum0_logo.png"
+    },
+	{
+      "type": "png",
+      "name": "STRATUM0_OPEN",
+      "file": "stratum0_open.png"
+    },
+      {
+      "type": "png",
+      "name": "STRATUM0_CLOSED",
+      "file": "stratum0_closed.png"
+    }
+    ]
+  }
+}

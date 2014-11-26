@@ -86,7 +86,6 @@
     <orderEntry type="library" exported="" name="pebblekit-2.6.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-21.0.2" level="project" />
     <orderEntry type="library" exported="" name="jsch-0.1.51" level="project" />
-    <orderEntry type="library" exported="" name="1_jsch-0.1.51" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-21.0.2" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-21.0.2" level="project" />
   </component>

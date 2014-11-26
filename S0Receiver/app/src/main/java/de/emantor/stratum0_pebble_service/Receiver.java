@@ -23,7 +23,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Properties;
 import java.util.UUID;
 
 /**
@@ -32,9 +31,9 @@ import java.util.UUID;
 public class Receiver extends BroadcastReceiver {
     private static final UUID PEBBLE_APP_UUID = UUID.fromString("62f12f0f-0de8-408e-bf67-08074cb4188d");
 
-    public static final int SPACE_STATUS = 0;
-    public static final int SPACE_OPENER = 1;
-    public static final int REQUEST_DATA = 2;
+    private static final int SPACE_STATUS = 0;
+    private static final int SPACE_OPENER = 1;
+    private static final int REQUEST_DATA = 2;
 
     private static final String TAG = "S0Receiver";
     private static final String url = "http://status.stratum0.org/status.json";
@@ -60,6 +59,7 @@ public class Receiver extends BroadcastReceiver {
         }
         return result;
     }
+
     public void update() throws ParseException {
         try {
             JSONObject jsonObject = new JSONObject(getStatusFromJSON());

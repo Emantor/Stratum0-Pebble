@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Environment;
 import android.os.StrictMode;
 import android.util.Log;
 
@@ -36,7 +37,8 @@ public class Receiver extends BroadcastReceiver {
     private static final int REQUEST_DATA = 2;
 
     private static final String TAG = "S0Receiver";
-    private static final String url = "http://status.stratum0.org/status.json";
+    private static final String URL = "http://status.stratum0.org/status.json";
+    private static final String KEYFILE = Environment.getExternalStorageDirectory().getPath() + "/stratum0";
 
     private boolean isOpen;
     private String since;
@@ -46,7 +48,7 @@ public class Receiver extends BroadcastReceiver {
         String result = "";
         DefaultHttpClient client = new DefaultHttpClient();
         try {
-            HttpResponse response = client.execute(new HttpGet(url));
+            HttpResponse response = client.execute(new HttpGet(URL));
             if (response.getStatusLine().getStatusCode() == 200) {
                 BufferedReader br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
                 String line;
@@ -91,7 +93,7 @@ public class Receiver extends BroadcastReceiver {
         if(isConnectedTo(context,"Stratum0") || isConnectedTo(context,"Stratum0_5G")) {
             try {
                 JSch jsch = new JSch();
-                jsch.addIdentity("/mnt/sdcard/stratum0", "");
+                jsch.addIdentity(KEYFILE, "");
                 Session session = jsch.getSession(username, "powerberry.fritz.box", 22);
                 session.setConfig("PreferredAuthentications", "publickey");
                 session.setConfig("StrictHostKeyChecking", "no");
@@ -174,9 +176,9 @@ public class Receiver extends BroadcastReceiver {
             if(data.getInteger(REQUEST_DATA)==1){
                 sendStatus(context);
             } else if (data.getInteger(REQUEST_DATA)==2){
-                connectPowerBerry(context,"auf");
+                connectPowerBerry(context, "auf");
             } else if (data.getInteger(REQUEST_DATA)==3){
-                connectPowerBerry(context,"zu");
+                connectPowerBerry(context, "zu");
             }
         }
     }
